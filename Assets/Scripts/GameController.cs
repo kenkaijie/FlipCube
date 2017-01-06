@@ -144,7 +144,6 @@ public class GameController : MonoBehaviour {
 
     private void CheckWin()
     {
-		Vector3 tilePosition = playerCube.GetComponentInChildren<PlayerController>().targetPosition - 0.5f * Vector3.up;
 		int tileCount = 0;
 		foreach (GameObject tile in gameTiles)
 		{
