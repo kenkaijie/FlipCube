@@ -12,18 +12,10 @@ public class GameTileController : MonoBehaviour
         ACTIVE
     }
 
-    public GameObject lightingCube;
-    public GameObject lightingBack;
-
-    public Renderer lightingCubeTexture;
-
-    private Animator anim;
-
-    public List<Color> tileColorsList = new List<Color>();
-    private Dictionary<GameTileControllerState, Color> tileColors = new Dictionary<GameTileControllerState, Color>();
 
     public GameTileControllerState state = GameTileControllerState.CREATED;
-    private GameTileControllerState lastProcessedState = GameTileControllerState.CREATED;
+
+    private Animator anim;
 
     // RED E1212180
     // GREEN 86F48C80
@@ -33,47 +25,12 @@ public class GameTileController : MonoBehaviour
     void Start()
     {
         anim = GetComponentInChildren<Animator>();
-
-        int count = 0;
-
-        if (tileColorsList.Count < sizeof(GameTileControllerState))
-        {
-            Debug.LogWarning("We have less colors than the amount of states.");
-        }
-
-        foreach (GameTileControllerState state in Enum.GetValues(typeof(GameTileControllerState)))
-        {
-            tileColors.Add(state, tileColorsList[count]);
-            count++;
-        }
         TransitionToState(GameTileControllerState.INACTIVE);
-
-
-    }
-
-    private void SetTileColor()
-    {
-        /*
-        if (tileColors.ContainsKey(state))
-        {
-            lightingCubeTexture.material.color = tileColors[state];
-        }
-        else
-        {
-            Debug.LogWarning("Game tile state " + state + " does not contain a color definition, is this intended?");
-        }
-        */
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (state != lastProcessedState)
-        {
-            SetTileColor();
-            lastProcessedState = state;
-        }
-        
     }
 
     private void ToggleTileState()
