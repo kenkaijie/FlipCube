@@ -42,7 +42,24 @@ public class PlayerController: IPlayerController
     public void StartMovePlayer(TumblingDirection direction, EventCallback callback)
     {
         if (state == LogicControllerState.IDLE)
-        {
+		{
+			switch (direction) {
+				case TumblingDirection.UP:
+					playerTargetPosition += Vector3.forward;
+					break;
+				case TumblingDirection.DOWN:
+					playerTargetPosition += Vector3.back;
+					break;
+				case TumblingDirection.LEFT:
+					playerTargetPosition += Vector3.left;
+					break;
+				case TumblingDirection.RIGHT:
+					playerTargetPosition += Vector3.right;
+					break;
+				case TumblingDirection.NONE:
+					playerTargetPosition += Vector3.zero;
+					break;
+			}
             player.StartTumbling(direction, OnPlayerMoveFinish);
             eventCallback = callback;
             state = LogicControllerState.BUSY;

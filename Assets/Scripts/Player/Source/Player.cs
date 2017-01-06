@@ -204,7 +204,7 @@ public class Player : MonoBehaviour, IPlayer, IStateful<PlayerState>
     {
         if (state != PlayerState.UNINITIALISED)
         {
-            Destroy(playerObject);
+			Destroy(gameObject);
             TransitionToState(PlayerState.UNINITIALISED);
         }
     }
