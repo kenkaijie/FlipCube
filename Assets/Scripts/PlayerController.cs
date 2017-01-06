@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour {
     private PlayerControllerState state = PlayerControllerState.CREATED;
 
 	private void Start () {
-        rb = GameObject.Find("Cube").GetComponent<Rigidbody>();
+        rb = GameObject.Find("Cube").GetComponentInChildren<Rigidbody>();
         previousPosition = rb.position;
         previousRotation = rb.rotation;
     }
@@ -197,6 +197,11 @@ public class PlayerController : MonoBehaviour {
         {
             Debug.LogError("Incorrect transition. ", gameObject);
         }
+    }
+
+    public void SelfDestruct()
+    {
+        Destroy(gameObject);
     }
 
     private void FixedUpdate()
