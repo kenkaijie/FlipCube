@@ -16,11 +16,16 @@ public class GameController : MonoBehaviour {
 
     // game objects
     public GameObject gameTilePrefab;
-    public GameObject playerCubePrefab;
+    public GameObject playerPrefab;
 
     public List<Vector3> playArea;
     private List<GameObject> gameTiles = new List<GameObject>();
     private GameObject playerCube;
+
+    // player objects
+    private IPlayer player;
+    private IPlayerController playerController;
+    private GameObject playerGameObject;
 
     // controller state
     private GameControllerState state = GameControllerState.CREATED;
@@ -29,8 +34,10 @@ public class GameController : MonoBehaviour {
 	IEnumerator Start () {
 
         yield return SpawnTiles();
-		playerCube = Instantiate<GameObject>(playerCubePrefab, Vector3.zero, Quaternion.identity);
-		playerCube.transform.parent = gameObject.transform;
+
+        playerGameObject = Instantiate<GameObject>(playerPrefab, Vector3.zero, Quaternion.identity);
+        player = playerGameObject.AddComponent<Player>();
+        playerController = new PlayerController(player);
 
         TransitionToState(GameControllerState.IDLE);
 
@@ -73,51 +80,52 @@ public class GameController : MonoBehaviour {
 
     private bool CheckInputs()
     {
-        PlayerController.TumblingDirection dir = PlayerController.TumblingDirection.NONE;
-		PlayerController playerController = playerCube.GetComponent<PlayerController>();
+        TumblingDirection dir = TumblingDirection.NONE;
 
         if (Input.GetButton("Up"))
         {
-            dir = PlayerController.TumblingDirection.UP;
+            dir = TumblingDirection.UP;
         }
         else if (Input.GetButton("Down"))
         {
-            dir = PlayerController.TumblingDirection.DOWN;
+            dir = TumblingDirection.DOWN;
         }
         else if (Input.GetButton("Left"))
         {
-            dir = PlayerController.TumblingDirection.LEFT;
+            dir = TumblingDirection.LEFT;
         }
         else if (Input.GetButton("Right"))
         {
-            dir = PlayerController.TumblingDirection.RIGHT;
+            dir = TumblingDirection.RIGHT;
         }
         else
         {
             return false;
         }
 			
-        if (playerController.SetTumblingDirection(dir, OnPlayerTumbleFinish))
-        {
-            TransitionToState(GameControllerState.BUSY);
-        }
+        playerController.StartMovePlayer(dir, OnPlayerTumbleFinish);
+        TransitionToState(GameControllerState.BUSY);
+
 
         return true;
     }
 
-    void OnPlayerTumbleFinish()
+    void OnPlayerTumbleFinish(EventCallbackError errorCode)
     {
-		TransitionToState(GameControllerState.IDLE);
-		Vector3 tilePosition = playerCube.GetComponentInChildren<PlayerController>().targetPosition - 0.5f * Vector3.up;
-		if (CheckBounds(tilePosition))
-		{	
-			CheckWin();
-		}
-		else
-		{
-			playerCube.GetComponent<PlayerController>().FreezePlayer();
-			TransitionToState(GameControllerState.LOSE);
-		}
+        if (errorCode == EventCallbackError.NOERROR)
+        {
+            TransitionToState(GameControllerState.IDLE);
+            Vector3 tilePosition = playerController.GetPlayerCurrentPosition();
+            if (CheckBounds(tilePosition))
+            {
+                CheckWin();
+            }
+            else
+            {
+                TransitionToState(GameControllerState.LOSE);
+            }
+        }
+
 
     }
 

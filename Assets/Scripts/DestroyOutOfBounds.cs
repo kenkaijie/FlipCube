@@ -8,7 +8,7 @@ public class DestroyOutOfBounds : MonoBehaviour {
     {
         if (other.gameObject.tag == "Player")
         {
-            other.GetComponentInParent<PlayerController>().SelfDestruct();
+            // stub for now
         }
     }
 }
