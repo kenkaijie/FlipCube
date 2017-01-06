@@ -453,8 +453,9 @@ PlayerSettings:
   XboxOnePersistentLocalStorageSize: 0
   vrEditorSettings: {}
   cloudServicesEnabled:
+    Build: 1
     UNet: 1
   cloudProjectId: 970362ac-b217-4b9b-9443-9dfc4e68563b
-  projectName: FlipCube (1)
+  projectName: FlipCube
   organizationId: sedsigafew
   cloudEnabled: 0
