@@ -26,15 +26,9 @@ public class GameController : MonoBehaviour {
     private GameControllerState state = GameControllerState.CREATED;
     
     // Use this for initialization
-	void Start () {
-		foreach (Vector3 point in playArea)
-        {
-            Debug.Log("Generating a tile at " + point.ToString());
-            GameObject a = Instantiate<GameObject>(gameTilePrefab, point, Quaternion.identity);
-            a.transform.parent = gameObject.transform;
-            gameTiles.Add(a);
-        }
+	IEnumerator Start () {
 
+        yield return SpawnTiles();
 		playerCube = Instantiate<GameObject>(playerCubePrefab, Vector3.zero, Quaternion.identity);
 		playerCube.transform.parent = gameObject.transform;
 
@@ -42,6 +36,19 @@ public class GameController : MonoBehaviour {
 
 	}
 	
+    private IEnumerator SpawnTiles()
+    {
+
+        foreach (Vector3 point in playArea)
+        {
+            Debug.Log("Generating a tile at " + point.ToString());
+            GameObject a = Instantiate<GameObject>(gameTilePrefab, point, Quaternion.identity);
+            a.transform.parent = gameObject.transform;
+            gameTiles.Add(a);
+            yield return new WaitForSeconds(Random.Range(0f, 0.1f));
+        }
+    }
+
 	// Update is called once per frame
 	void Update () {
 
@@ -141,7 +148,7 @@ public class GameController : MonoBehaviour {
 		int tileCount = 0;
 		foreach (GameObject tile in gameTiles)
 		{
-			if (tile.GetComponent<GameTileController>().tileState == GameTileController.GameTileState.ACTIVE)
+			if (tile.GetComponent<GameTileController>().state == GameTileController.GameTileControllerState.ACTIVE)
 			{
 				tileCount += 1;
 			}
