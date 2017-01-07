@@ -20,7 +20,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4078969632421868}
   - component: {fileID: 65170981223231836}
-  - component: {fileID: 114753535124777390}
   m_Layer: 0
   m_Name: GameTile
   m_TagString: Tile
@@ -266,22 +265,3 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &114753535124777390
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1027052935048826}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79b4ddc15854daf4c8ffa85b05db5bd1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lightingCube: {fileID: 1043992199708656}
-  lightingBack: {fileID: 1838820550134184}
-  lightingCubeTexture: {fileID: 23929029215148774}
-  tileColorsList:
-  - {r: 0.5254902, g: 0.95686275, b: 0.54901963, a: 0.5019608}
-  - {r: 0.5254902, g: 0.95686275, b: 0.54901963, a: 0.5019608}
-  - {r: 0.88235295, g: 0.12941177, b: 0.12941177, a: 0.5019608}
-  state: 0

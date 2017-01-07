@@ -19,25 +19,31 @@ public class GameController : MonoBehaviour {
     public GameObject playerPrefab;
 
     public List<Vector3> playArea;
-    private List<GameObject> gameTiles = new List<GameObject>();
-    private GameObject playerCube;
+    private Dictionary<Vector3, IGameTileController> gameTiles = new Dictionary<Vector3, IGameTileController>();
 
     // player objects
     private IPlayer player;
     private IPlayerController playerController;
     private GameObject playerGameObject;
 
+    // game tile objects
+    private IGameTile gameTile;
+    private GameObject gameTileGameObject;
+    private IGameTileController gameTileController;
+
     // controller state
     private GameControllerState state = GameControllerState.CREATED;
     
     // Use this for initialization
 	IEnumerator Start () {
-
+        Debug.logger.logEnabled = true;
         yield return SpawnTiles();
 
         playerGameObject = Instantiate<GameObject>(playerPrefab, Vector3.zero, Quaternion.identity);
         player = playerGameObject.AddComponent<Player>();
         playerController = new PlayerController(player);
+
+        gameTiles[Vector3.zero].ActivateTile();
 
         TransitionToState(GameControllerState.IDLE);
 
@@ -48,10 +54,9 @@ public class GameController : MonoBehaviour {
 
         foreach (Vector3 point in playArea)
         {
-            Debug.Log("Generating a tile at " + point.ToString());
-            GameObject a = Instantiate<GameObject>(gameTilePrefab, point, Quaternion.identity);
-            a.transform.parent = gameObject.transform;
-            gameTiles.Add(a);
+            gameTileGameObject = Instantiate<GameObject>(gameTilePrefab, point, Quaternion.identity);
+            gameTile = gameTileGameObject.AddComponent<GameTile>();
+            gameTiles.Add(point, (IGameTileController) new GameTileController(gameTile));
             yield return new WaitForSeconds(Random.Range(0f, 0.1f));
         }
     }
@@ -116,6 +121,20 @@ public class GameController : MonoBehaviour {
         {
             TransitionToState(GameControllerState.IDLE);
             Vector3 tilePosition = playerController.GetPlayerCurrentPosition();
+
+            if (gameTiles.ContainsKey(tilePosition))
+            {
+                IGameTileController tileController = gameTiles[tilePosition];
+                if (tileController.IsActivated())
+                {
+                    tileController.DeactivateTile();
+                }
+                else
+                {
+                    tileController.ActivateTile();
+                }
+            }
+
             if (CheckBounds(tilePosition))
             {
                 CheckWin();
@@ -153,9 +172,11 @@ public class GameController : MonoBehaviour {
     private void CheckWin()
     {
 		int tileCount = 0;
-		foreach (GameObject tile in gameTiles)
+		foreach (KeyValuePair<Vector3,IGameTileController> gameTileKeyValuePair in gameTiles)
 		{
-			if (tile.GetComponent<GameTileController>().state == GameTileController.GameTileControllerState.ACTIVE)
+            IGameTileController tileController = gameTileKeyValuePair.Value;
+
+            if (tileController.IsActivated())
 			{
 				tileCount += 1;
 			}

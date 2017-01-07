@@ -3,13 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class Player : MonoBehaviour, IPlayer, IStateful<PlayerState>
 {
 
     // configuration parameters
-    private GameObject playerPrefab;
-
     private static float magnitude = 60f;
     private static Vector3 baseForceVector = new Vector3(0.0f, -0.6f, 1f);
 
@@ -20,8 +17,6 @@ public class Player : MonoBehaviour, IPlayer, IStateful<PlayerState>
     private Vector3 appliedVector = Vector3.zero;
     private Quaternion appliedRotation = Quaternion.identity;
     private EventCallback callback = null;
-
-    private GameObject playerObject;
 
     // cube positions
 	public Vector3 previousPosition {get; private set;}

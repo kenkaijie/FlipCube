@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using NSubstitute;
 using NUnit.Framework;
+using UnityEngine;
 
 [TestFixture]
 public class TestPlayerController
@@ -14,7 +15,7 @@ public class TestPlayerController
 	[SetUp]
 	public void SetUp()
 	{
-
+        Debug.logger.logEnabled = false;
 	}
 
 	// if we have a player that is already in idle, we should automatically set our state to idle
@@ -28,11 +29,30 @@ public class TestPlayerController
 		Assert.AreEqual(playerController.GetState(), LogicControllerState.IDLE);
 	}
 
+	// if we have a player that is already in idle, we should automatically set our state to idle
+	[Test]
+	public void TestIncorrectPlayerControllerState()
+	{
+		player = GetPlayerMock();
+		player.GetState().Returns(PlayerState.CREATED);
+		playerController = new PlayerController(player);
+
+		Assert.AreNotEqual(playerController.GetState(), LogicControllerState.IDLE);
+	}
+
+	[Test]
+	public void TestInvalidMoveCausesPlayerControllerToGoIntoError()
+	{
+		player = GetPlayerMock();
+		player.GetState().Returns(PlayerState.IDLE);
+		playerController = new PlayerController(player);
+	}
+
 	[TearDown]
 	public void TearDown()
 	{
 
-	}
+    }
 
 	private IPlayer GetPlayerMock()
 	{
