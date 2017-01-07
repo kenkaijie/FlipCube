@@ -307,7 +307,7 @@ MeshFilter:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1733355844317346}
-  m_Mesh: {fileID: 4300000, guid: 685583125d1af1f49aaa976ce8dd177f, type: 3}
+  m_Mesh: {fileID: 4300000, guid: aeb86753889408746a65d34a6808be6b, type: 3}
 --- !u!65 &65042934701508484
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -360,5 +360,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 309742f92e6f49244bf18768098ab11a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultColor: {r: 1, g: 0, b: 0, a: 0.5019608}
-  defaultEdgeColor: {r: 0.97794116, g: 0.97794116, b: 0.97794116, a: 0.5}
+  defaultColor: {r: 0.41468424, g: 0.86764705, b: 0.51152456, a: 0.5019608}
+  defaultEdgeColor: {r: 0.41568628, g: 0.8666667, b: 0.50980395, a: 0.5019608}
