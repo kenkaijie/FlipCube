@@ -81,4 +81,13 @@ public class MockPlayer : IPlayer
         return state;
     }
 
+    public void Teleport(Vector3 position, Quaternion rotation)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Destroy()
+    {
+        throw new NotImplementedException();
+    }
 }

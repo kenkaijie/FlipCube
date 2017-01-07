@@ -190,4 +190,13 @@ public class PlayerController: IPlayerController
         return state;
     }
 
+    public void TeleportPlayer(Vector3 position)
+    {
+        player.Teleport(position, player.GetCurrentRotation());
+    }
+
+    public void DestroyPlayer()
+    {
+        player.Destroy();
+    }
 }

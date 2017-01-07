@@ -22,6 +22,8 @@ public enum PlayerState
 public interface IPlayer : IStateful<PlayerState>
 {
     void StartTumbling(TumblingDirection direction, EventCallback callback);
+    void Teleport(Vector3 position, Quaternion rotation);
     Quaternion GetCurrentRotation();
     Vector3 GetCurrentPosition();
+    void Destroy();
 }

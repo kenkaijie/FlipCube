@@ -7,6 +7,6 @@ using UnityEngine;
 public interface IGameTile
 {
     Vector3 GetPosition();
-    void ActivateTile();
-    void DeactivateTile();
+    void SetTileColor(Color color, float durationS);
+    void DespawnTile();
 }

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using UnityEngine;
 
-public interface IInputListener
+public class GameBoardController : IGameBoardController
 {
-    void SetInputHandler(EventCallback handler);
+    
 }

@@ -27,10 +27,12 @@ public class Player : MonoBehaviour, IPlayer, IStateful<PlayerState>
 
     PlayerState state = PlayerState.UNINITIALISED;
 
+    private Animator anim;
     private StateCallback<PlayerState> stateChangeCallback = null;
 
     public void Start()
     {
+        anim = GetComponentInChildren<Animator>();
         rb = GetComponentInChildren<Rigidbody>();
         state = PlayerState.CREATED;
     }
@@ -267,4 +269,17 @@ public class Player : MonoBehaviour, IPlayer, IStateful<PlayerState>
     {
         return state;
     }
+
+    public void Teleport(Vector3 position, Quaternion rotation)
+    {
+        FreezePlayer();
+        rb.position = position;
+        //rb.rotation = rotation;
+    }
+    
+    public void Destroy()
+    {
+        anim.SetTrigger("Despawn");
+    }
+
 }

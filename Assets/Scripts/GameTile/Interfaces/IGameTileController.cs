@@ -10,4 +10,6 @@ public interface IGameTileController
     bool IsActivated();
     void ActivateTile();
     void DeactivateTile();
+    void DespawnTile();
+    void SetTileColor(Color color);
 }

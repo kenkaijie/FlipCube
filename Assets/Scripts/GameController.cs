@@ -39,7 +39,7 @@ public class GameController : MonoBehaviour {
         Debug.logger.logEnabled = true;
         yield return SpawnTiles();
 
-        playerGameObject = Instantiate<GameObject>(playerPrefab, Vector3.zero, Quaternion.identity);
+        playerGameObject = Instantiate<GameObject>(playerPrefab, 0.5f*Vector3.up, Quaternion.identity);
         player = playerGameObject.AddComponent<Player>();
         playerController = new PlayerController(player);
 
