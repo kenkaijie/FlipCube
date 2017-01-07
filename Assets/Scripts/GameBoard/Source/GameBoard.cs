@@ -29,7 +29,8 @@ public class GameBoard : MonoBehaviour, IGameBoard
         {
             if (!gameTiles.ContainsKey(point))
             {
-                gameTiles.Add(point, new GameTileController(Instantiate<GameObject>(gameTilePrefab, point, Quaternion.identity).gameObject.AddComponent<GameTile>()));
+
+                gameTiles.Add(point, new GameTileController(Instantiate<GameObject>(gameTilePrefab, point, Quaternion.identity).GetComponent<GameTile>()));
                 if (!Mathf.Approximately(Mathf.Max(0f, maxSpawnDelay), 0.0f))
                 {
                     yield return new WaitForSeconds(Random.Range(0f, maxSpawnDelay));

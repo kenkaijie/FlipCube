@@ -124,7 +124,7 @@ MonoBehaviour:
   - {x: 2, y: 0, z: 0}
   - {x: 3, y: 0, z: 0}
   - {x: 4, y: 0, z: 0}
-  gameTilePrefab: {fileID: 1027052935048826, guid: 8beefe760b74b4e43adfe15c78ddb50b,
+  gameTilePrefab: {fileID: 1721936648258984, guid: 18db106684b720a42a3718722836fdbc,
     type: 2}
 --- !u!4 &123733200
 Transform:
@@ -153,7 +153,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &504312058
 Transform:
   m_ObjectHideFlags: 0
