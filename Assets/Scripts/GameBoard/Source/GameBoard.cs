@@ -2,38 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameBoard : MonoBehaviour, IGameBoard
+public class GameBoard : MonoBehaviour, IGameBoard, ISpawnable
 {
-
-    // test variables
-    public List<Vector3> injectedTileCoordinates;
-
-
     public GameObject gameTilePrefab;
-    private List<Vector3> tileCoordinates;
     private Dictionary<Vector3, IGameTileController> gameTiles = new Dictionary<Vector3, IGameTileController>();
 
-    IEnumerator Start()
+    private delegate void OnGenerated();
+
+    CallbackHandler onCreationCompleteHandler;
+
+    public void GenerateBoard(List<Vector3> points)
     {
-        yield return GenerateBoard(injectedTileCoordinates,0.1f);
+        StartCoroutine(SpawnTiles(points, 0.1f));
     }
 
-    public IEnumerator GenerateBoard(List<Vector3> points)
+    public void GenerateBoard(List<Vector3> points,  float maxSpawnDelay)
     {
-        yield return GenerateBoard(points, 0.1f);
+        StartCoroutine(SpawnTiles(points, maxSpawnDelay));
     }
 
-    public IEnumerator GenerateBoard(List<Vector3> points, float maxSpawnDelay)
+    public IEnumerator SpawnTiles(List<Vector3> points, float maxSpawnDelay)
     {
         foreach (Vector3 point in points)
         {
             if (!gameTiles.ContainsKey(point))
             {
-
-                gameTiles.Add(point, new GameTileController(Instantiate<GameObject>(gameTilePrefab, point, Quaternion.identity).GetComponent<GameTile>()));
+                GameObject tile = Instantiate<GameObject>(gameTilePrefab, point, Quaternion.identity);
+                tile.transform.parent = transform;
+                gameTiles.Add(point, new GameTileController(tile.GetComponent<IGameTile>()));
                 if (!Mathf.Approximately(Mathf.Max(0f, maxSpawnDelay), 0.0f))
                 {
-                    yield return new WaitForSeconds(Random.Range(0f, maxSpawnDelay));
+                    yield return new WaitForSeconds(maxSpawnDelay);
                 }
             }
             else
@@ -41,42 +40,48 @@ public class GameBoard : MonoBehaviour, IGameBoard
                 Debug.LogWarning("Duplicate point, " + point);
             }
         }
-
-        tileCoordinates = points;
-        yield return null;
+        float waitTime = 0f;
+        if (GetTileCount() > 0)
+        {
+            // just get the first, they should all have the same spawn times
+            waitTime = gameTiles[points[0]].GetSpawnTime();
+        }
+        yield return new WaitForSeconds(waitTime);
+        if (onCreationCompleteHandler != null)
+        {
+            onCreationCompleteHandler.Invoke();
+        }
     }
 
     public void TearDownBoard()
     {
-        tileCoordinates = new List<Vector3>();
         foreach (KeyValuePair<Vector3,IGameTileController> pair in gameTiles)
         {
             pair.Value.DespawnTile();
         }
+        gameTiles = new Dictionary<Vector3, IGameTileController>();
     }
 
-    public List<Vector3> GetAllTileCoordinates()
-    {
-        return new List<Vector3>(tileCoordinates);
-    }
-
-    void SetTileColor(Vector3 position, Color color)
+    public void SetTileState(Vector3 position, ITileState newTileState)
     {
         if (gameTiles.ContainsKey(position))
         {
-            gameTiles[position].SetTileColor(color);
+            gameTiles[position].SetTileState(newTileState);
         }
         else
         {
-            Debug.LogWarning("Attempted to change the color of tile at invalid position: " + position + ", color: " + color);
+            throw new KeyNotFoundException();
         }
     }
 
-    void SetAllTileColor(Color color)
+    public void SetOnCreationCompleteHandler(CallbackHandler callback)
     {
-        foreach (Vector3 point in tileCoordinates)
-        {
-            SetTileColor(point, color);
-        }
+        onCreationCompleteHandler = callback;
+    }
+
+
+    public int GetTileCount()
+    {
+        return gameTiles.Count;
     }
 }

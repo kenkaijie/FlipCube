@@ -14,9 +14,12 @@ public class GameController : MonoBehaviour {
 		LOSE
     }
 
+    private Dictionary<string, ITileState> tileStatesRegister = new Dictionary<string, ITileState>();
+
     // game objects
     public GameObject gameTilePrefab;
     public GameObject playerPrefab;
+    public GameObject gameBoardPrefab;
 
     public List<Vector3> playArea;
     private Dictionary<Vector3, IGameTileController> gameTiles = new Dictionary<Vector3, IGameTileController>();
@@ -31,35 +34,35 @@ public class GameController : MonoBehaviour {
     private GameObject gameTileGameObject;
     private IGameTileController gameTileController;
 
+    // game board objects
+    private IGameBoardController gameBoardController;
+
     // controller state
     private GameControllerState state = GameControllerState.CREATED;
     
     // Use this for initialization
-	IEnumerator Start () {
+	void Start () {
         Debug.logger.logEnabled = true;
-        yield return SpawnTiles();
+
+        tileStatesRegister.Add("Active", new TileState("Active", new Color(0.882f,0.129f,0.129f,0.502f)));
+        tileStatesRegister.Add("Inactive", new TileState("Inactive", new Color(0.525f, 0.957f, 0.549f, 0.502f)));
+
+        gameBoardController = new GameBoardController(Instantiate<GameObject>(gameBoardPrefab).GetComponent<IGameBoard>(),playArea, tileStatesRegister["Active"]);
+
+        gameBoardController.GenerateBoard();
+
+        foreach (Vector3 point in playArea)
+        {
+            gameBoardController.SetTileState(point, tileStatesRegister["Inactive"]);
+        }
 
         playerGameObject = Instantiate<GameObject>(playerPrefab, 0.5f*Vector3.up, Quaternion.identity);
         player = playerGameObject.AddComponent<Player>();
         playerController = new PlayerController(player);
-
-        gameTiles[Vector3.zero].ActivateTile();
-
         TransitionToState(GameControllerState.IDLE);
 
 	}
 	
-    private IEnumerator SpawnTiles()
-    {
-
-        foreach (Vector3 point in playArea)
-        {
-            gameTileGameObject = Instantiate<GameObject>(gameTilePrefab, point, Quaternion.identity);
-            gameTile = gameTileGameObject.AddComponent<GameTile>();
-            gameTiles.Add(point, (IGameTileController) new GameTileController(gameTile));
-            yield return new WaitForSeconds(Random.Range(0f, 0.1f));
-        }
-    }
 
 	// Update is called once per frame
 	void Update () {
@@ -125,13 +128,13 @@ public class GameController : MonoBehaviour {
             if (gameTiles.ContainsKey(tilePosition))
             {
                 IGameTileController tileController = gameTiles[tilePosition];
-                if (tileController.IsActivated())
+                if (tileController.GetTileState().Equals(tileStatesRegister["Active"]))
                 {
-                    tileController.DeactivateTile();
+                    tileController.SetTileState(tileStatesRegister["Active"]);
                 }
                 else
                 {
-                    tileController.ActivateTile();
+                    tileController.SetTileState(tileStatesRegister["Inactive"]);
                 }
             }
 
@@ -176,8 +179,8 @@ public class GameController : MonoBehaviour {
 		{
             IGameTileController tileController = gameTileKeyValuePair.Value;
 
-            if (tileController.IsActivated())
-			{
+            if (tileController.GetTileState().Equals(tileStatesRegister["Active"]))
+            {
 				tileCount += 1;
 			}
 		}

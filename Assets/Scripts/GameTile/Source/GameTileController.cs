@@ -7,32 +7,15 @@ using UnityEngine;
 
 public class GameTileController : IGameTileController
 {
-    private bool tileActivated = false;
     private IGameTile gameTile;
+    private ITileState tileState;
 
     public GameTileController(IGameTile obj)
     {
         gameTile = obj;
+        tileState = null;
     }
-
-    public void ActivateTile()
-    {
-        gameTile.SetTileColor(new Color(0.8982f, 0.129f, 0.129f, 0.502f), 0.2f);
-        tileActivated = true;
-    }
-
-    public void DeactivateTile()
-    {
-        gameTile.SetTileColor(new Color(0.525f, 0.957f, 0.549f, 0.502f), 0.2f);
-        tileActivated = false;
-    }
-
-    // contains a state machine for the game tile
-    public bool IsActivated()
-    {
-        return tileActivated;
-    }
-
+    
     public Vector3 GetPosition()
     {
         return gameTile.GetPosition();
@@ -43,8 +26,24 @@ public class GameTileController : IGameTileController
         gameTile.DespawnTile();
     }
 
-    public void SetTileColor(Color color)
+    public void SetTileState(ITileState newTileState)
     {
-        gameTile.SetTileColor(color, 0.2f);
+        tileState = newTileState;
+        gameTile.SetTileColor(newTileState.GetColor(), 0.2f);
+    }
+
+    public ITileState GetTileState()
+    {
+        return tileState;
+    }
+
+    public float GetSpawnTime()
+    {
+        return 1.1f;
+    }
+
+    public float GetDespawnTime()
+    {
+        return 1.1f;
     }
 }

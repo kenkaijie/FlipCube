@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,19 +8,19 @@ public class GameTile : MonoBehaviour, IGameTile
     private Renderer tileRenderer;
     // Use this for initialization
 
-    public Color defaultColor = new Color(0.525f, 0.957f, 0.549f, 0.502f);
     private Color currentColor;
     private Color targetColor;
 
     float lerpPercentage = 0.0f;
     float lerpStep = 0.1f;
 
+    CallbackHandler onGeneratedCallback;
+
     void Start()
     {
         tileRenderer = transform.Find("AnimatedGroup/Tile").gameObject.GetComponent<Renderer>();
         anim = GetComponentInChildren<Animator>();
         currentColor = targetColor = tileRenderer.material.GetColor("_Color");
-        SetTileColor(defaultColor, 1.0f);
     }
 
     public void SetTileColor(Color target, float durationS)
@@ -56,6 +55,12 @@ public class GameTile : MonoBehaviour, IGameTile
     public void DespawnTile()
     {
         anim.SetTrigger("Despawn");
-        Destroy(gameObject, 1.0f);
+        float delay = anim.GetCurrentAnimatorStateInfo(0).length + 1f;
+        Destroy(gameObject, delay);
+    }
+
+    public void SetOnCreationCompleteHandler(CallbackHandler callback)
+    {
+        onGeneratedCallback = callback;
     }
 }

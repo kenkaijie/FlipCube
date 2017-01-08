@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,10 +7,6 @@ public class GameTileWithEdge : MonoBehaviour, IGameTile, IGameTileWithEdge
     private Animator anim;
     private Renderer tileRenderer;
     private Renderer tileEdgeRenderer;
-    // Use this for initialization
-
-    public Color defaultColor;
-    public Color defaultEdgeColor;
     
     //tile
     private Color currentColor;
@@ -25,7 +20,6 @@ public class GameTileWithEdge : MonoBehaviour, IGameTile, IGameTileWithEdge
     float lerpEdgePercentage = 0.0f;
     float lerpEdgeStep = 0.1f;
 
-
     void Start()
     {
         tileRenderer = transform.Find("AnimatedGroup/Tile").gameObject.GetComponent<Renderer>();
@@ -33,8 +27,6 @@ public class GameTileWithEdge : MonoBehaviour, IGameTile, IGameTileWithEdge
         anim = GetComponentInChildren<Animator>();
         currentColor = targetColor = tileRenderer.material.GetColor("_Color");
         currentEdgeColor = targetEdgeColor = tileEdgeRenderer.material.GetColor("_Color");
-        SetTileColor(defaultColor, 1.0f);
-        SetTileEdgeColor(defaultEdgeColor, 1.0f);
     }
 
     public void SetTileColor(Color color, float durationS)
@@ -74,7 +66,8 @@ public class GameTileWithEdge : MonoBehaviour, IGameTile, IGameTileWithEdge
     public void DespawnTile()
     {
         anim.SetTrigger("Despawn");
-        Destroy(gameObject, 1.0f);
+        float delay = anim.GetCurrentAnimatorStateInfo(0).length + 1f;
+        Destroy(gameObject, delay);
     }
 
     public void SetTileEdgeColor(Color color, float durationS)
