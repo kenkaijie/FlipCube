@@ -57,8 +57,6 @@ public class GameController : MonoBehaviour {
         }
 
         playerGameObject = Instantiate<GameObject>(playerPrefab, 0.5f*Vector3.up, Quaternion.identity);
-        player = playerGameObject.AddComponent<Player>();
-        playerController = new PlayerController(player);
         TransitionToState(GameControllerState.IDLE);
 
 	}

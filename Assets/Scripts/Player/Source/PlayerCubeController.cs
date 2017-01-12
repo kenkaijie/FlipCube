@@ -1,21 +1,15 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public enum IPlayerCubeStateName
 {
-	UNINIT,
-	IDLE,
-	TUMBLING,
-	SPAWNING,
-	DESPAWNING,
-	TELEPORTING
+    IDLE, TUMBLING, ERROR
 }
 
 public class PlayerCubeController : MonoBehaviour , IPlayerCubeController
 {
-
-
 
 	private Vector3 targetPlayerPosition;
 	private Vector3 lastSuccessfulPlayerPosition;
@@ -26,68 +20,43 @@ public class PlayerCubeController : MonoBehaviour , IPlayerCubeController
 	private IPlayerCubeState nextState;
 	private Dictionary<IPlayerCubeStateName, IPlayerCubeState> playerStateMap = new Dictionary<IPlayerCubeStateName, IPlayerCubeState>();
 
-	IEnumerator Start () {
+	void Start () {
 
 		//generating all the states here
-
 		playerStateMap.Add(IPlayerCubeStateName.IDLE,GetComponentInChildren<PlayerCubeStateIdle>());
 		playerStateMap.Add(IPlayerCubeStateName.TUMBLING,GetComponentInChildren<PlayerCubeStateTumbling>());
 
-		currentState = playerStateMap [IPlayerCubeStateName.IDLE];
+        currentState = playerStateMap[IPlayerCubeStateName.IDLE];
 
-
-
-
+        StartTumble(Vector3.forward, OnDone);
 
 	}
 
+    private void OnDone(EventCallbackError error)
+    {
+    }
+
 	private void Update () {
-		currentState.UpdateState ();
+        TransitionToState(currentState.UpdateState ());
 	}
 
 	private void FixedUpdate()
 	{
-		currentState.FixedUpdateState ();
+        TransitionToState(currentState.FixedUpdateState ());
 	}
 
-	private void OnStateTransition(EventCallbackError error)
-	{
-		if (error == EventCallbackError.NOERROR)
-		{
-			lastSuccessfulPlayerPosition = targetPlayerPosition;
-			currentState = nextState;
-		}
 
-		nextCallback.Invoke (error);
+	public void StartTumble(Vector3 position, EventCallback callback)
+	{
+        targetPlayerPosition = position;
+        TransitionToState(currentState.StartTumble (position));	
 	}
 
-	public void StartTumbling(Vector3 position, EventCallback callback)
-	{
-		targetPlayerPosition = position;
-		currentState.StartTumble (position, OnStateTransition);	
-	}
-	public void StartTeleporting (Vector3 position, EventCallback callback)
-	{
-		targetPlayerPosition = position;
-		currentState.StartTeleport (position, OnStateTransition);	
-	}
-
-	// creation/deletion
-	public void StartSpawn(Vector3 position, EventCallback callback)
-	{
-		targetPlayerPosition = position;
-		currentState.StartSpawn (position, OnStateTransition);	
-	}
-	public void StartDespawn(EventCallback callback)
-	{
-		targetPlayerPosition = Vector3.zero;
-		currentState.StartDespawn (OnStateTransition);	
-	}
-
-	public void SetNextState(IPlayerCubeStateName newState)
-	{
-		nextState = playerStateMap[newState];
-	}
+	private void TransitionToState(StateTransition<IPlayerCubeState> stateInfo)
+    {
+        currentState = stateInfo.nextState;
+        currentState.OnStateEntry(targetPlayerPosition);
+    }
 
 	// parameters
 	public bool IsSpawned()
