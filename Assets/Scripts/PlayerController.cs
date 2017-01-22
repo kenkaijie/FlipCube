@@ -83,12 +83,12 @@ public class PlayerController : MonoBehaviour {
                 case TumblingDirection.LEFT:
                     rotationModifier = 270f;
                     appliedVector = Vector3.left;
-                    appliedRotation = Quaternion.AngleAxis(-90f, Vector3.forward);
+                    appliedRotation = Quaternion.AngleAxis(90f, Vector3.forward);
                     break;
                 case TumblingDirection.RIGHT:
                     rotationModifier = 90f;
                     appliedVector = Vector3.right;
-                    appliedRotation = Quaternion.AngleAxis(90f, Vector3.forward);
+                    appliedRotation = Quaternion.AngleAxis(-90f, Vector3.forward);
                     break;
                 case TumblingDirection.NONE:
                     rotationModifier = 0f;
@@ -136,7 +136,7 @@ public class PlayerController : MonoBehaviour {
                 previousRotation = rb.rotation;
 
                 targetPosition = previousPosition + appliedVector;
-                targetRotation = previousRotation * appliedRotation;
+                targetRotation = appliedRotation * previousRotation;
 
                 forceVector = Quaternion.Euler(0f, rotationModifier, 0f) * baseForceVector;
 
